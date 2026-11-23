@@ -1,0 +1,138 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>BHIM AI Show Hub</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{--navy:#0F1B33;--paper:#F4F6FA;--teal:#1FB5A0;--amber:#F5A524;--red:#E5484D;--green:#2BB673;--ink:#1d2433;--muted:#5b6478;--card:#fff;--soft:#f6f8fb}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#0b1222;--ink:#e6eaf2;--muted:#9aa4b8;--card:#152038;--soft:#1b2843}}
+:root[data-theme="dark"]{--paper:#0b1222;--ink:#e6eaf2;--muted:#9aa4b8;--card:#152038;--soft:#1b2843}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--paper);color:var(--ink)}
+header{background:var(--navy);color:#fff;padding:12px 16px;font-weight:800;font-size:18px}
+header b{color:var(--amber)}
+.wrap{max-width:1200px;margin:auto;padding-block:16px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+.hero{background:linear-gradient(120deg,var(--navy),#23396a);color:#fff;border-radius:16px;padding:16px;display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:center}
+@media(max-width:640px){.hero{grid-template-columns:1fr;text-align:center}}
+#bot{width:140px;height:auto;margin:auto;display:block}
+#bot .eye{animation:blink 4s infinite;transform-origin:center;transform-box:fill-box}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+#bot .ant{animation:glow 1.6s infinite alternate}
+@keyframes glow{from{opacity:.5}to{opacity:1}}
+.hero h1{margin:0 0 6px;font-size:26px}
+.hero p{margin:4px 0;color:#d6ddeb;font-size:14px;line-height:1.45}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--teal);text-transform:uppercase}
+h2{margin:0 0 4px;font-size:18px}
+.eps{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.ep{background:var(--card);border-radius:14px;padding:14px;box-shadow:0 2px 10px #0f1b3314;display:flex;flex-direction:column;gap:6px;border-top:5px solid var(--teal)}
+.ep .n{font-size:11px;font-weight:800;letter-spacing:1px;color:var(--muted);text-transform:uppercase}
+.ep h3{margin:0;font-size:16px}
+.ep p{margin:0;font-size:13px;color:var(--muted);line-height:1.4;flex:1}
+.ep a{align-self:flex-start;background:var(--amber);color:var(--navy);font-weight:700;text-decoration:none;padding:7px 12px;border-radius:9px;font-size:13px}
+.ep .tag{font-size:11.5px;background:var(--soft);border-radius:8px;padding:2px 8px;align-self:flex-start}
+.card{background:var(--card);border-radius:16px;padding:16px;box-shadow:0 2px 10px #0f1b3314}
+.timer{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:10px 0}
+.clock{font-size:40px;font-weight:800;font-variant-numeric:tabular-nums;min-width:130px}
+.now{font-size:14px;font-weight:700}
+button{font:inherit;border:0;border-radius:9px;padding:8px 12px;cursor:pointer;font-weight:600;background:var(--soft);color:var(--ink)}
+button.pri{background:var(--teal);color:#fff}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.tabs button.on{background:var(--navy);color:#fff}
+.rs{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.rs th,.rs td{text-align:left;padding:7px 8px;border-bottom:1px solid #8892a633;vertical-align:top}
+.rs th{font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.rs tr.cur td{background:#f5a52429}
+.rs tr.done td{opacity:.55}
+.tbl{overflow-x:auto}
+.note{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.45}
+</style>
+<header>🤖 BHIM <b>AI Show</b> · Hub</header>
+<div class="wrap">
+  <section class="hero">
+    <svg id="bot" viewBox="0 0 200 300" role="img" aria-label="BHIM, a friendly AI robot wearing a kurta and dhoti">
+      <defs>
+        <linearGradient id="metal" x1="0" x2="1"><stop offset="0" stop-color="#cfd9e6"/><stop offset=".5" stop-color="#f3f6fa"/><stop offset="1" stop-color="#9fb0c6"/></linearGradient>
+        <linearGradient id="kurta" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fffaf0"/><stop offset="1" stop-color="#efe6d2"/></linearGradient>
+      </defs>
+      <line x1="100" y1="22" x2="100" y2="40" stroke="#9fb0c6" stroke-width="4"/>
+      <circle class="ant" cx="100" cy="18" r="7" fill="#F5A524"/>
+      <rect x="58" y="38" width="84" height="68" rx="22" fill="url(#metal)" stroke="#7d8da6" stroke-width="2"/>
+      <rect x="50" y="62" width="10" height="22" rx="4" fill="#7d8da6"/><rect x="140" y="62" width="10" height="22" rx="4" fill="#7d8da6"/>
+      <rect x="68" y="52" width="64" height="34" rx="14" fill="#0F1B33"/>
+      <ellipse class="eye" cx="86" cy="68" rx="7" ry="8" fill="#5ff2dc"/>
+      <ellipse class="eye" cx="114" cy="68" rx="7" ry="8" fill="#5ff2dc"/>
+      <circle cx="88" cy="65" r="2" fill="#fff"/><circle cx="116" cy="65" r="2" fill="#fff"/>
+      <g class="mouth" fill="#5ff2dc"><rect x="90" y="92" width="5" height="3" rx="1"/><rect x="98" y="92" width="5" height="3" rx="1"/><rect x="106" y="92" width="5" height="3" rx="1"/></g>
+      <rect x="90" y="106" width="20" height="10" fill="#9fb0c6"/>
+      <g><rect x="34" y="124" width="18" height="62" rx="9" fill="url(#kurta)" stroke="#d8cdb4"/><circle cx="43" cy="192" r="9" fill="url(#metal)" stroke="#7d8da6"/></g>
+      <g class="arm-r"><rect x="148" y="124" width="18" height="62" rx="9" fill="url(#kurta)" stroke="#d8cdb4"/><circle cx="157" cy="192" r="9" fill="url(#metal)" stroke="#7d8da6"/></g>
+      <path d="M52 120 Q100 108 148 120 L156 214 Q100 224 44 214 Z" fill="url(#kurta)" stroke="#d8cdb4" stroke-width="2"/>
+      <rect x="88" y="113" width="24" height="9" rx="3" fill="#1FB5A0"/>
+      <line x1="100" y1="122" x2="100" y2="166" stroke="#1FB5A0" stroke-width="3"/>
+      <circle cx="100" cy="132" r="2.4" fill="#F5A524"/><circle cx="100" cy="144" r="2.4" fill="#F5A524"/><circle cx="100" cy="156" r="2.4" fill="#F5A524"/>
+      <rect x="114" y="140" width="26" height="12" rx="3" fill="#0F1B33"/><text x="127" y="149.5" font-size="8" text-anchor="middle" fill="#F5A524" font-weight="700" font-family="sans-serif">BHIM</text>
+      <path d="M46 206 Q100 216 154 206" stroke="#1FB5A0" stroke-width="3" fill="none"/>
+      <path d="M58 214 Q100 222 142 214 L148 262 Q124 268 104 258 L100 236 L96 258 Q76 268 52 262 Z" fill="#fffdf7" stroke="#d8cdb4" stroke-width="2"/>
+      <path d="M70 222 L66 258 M82 224 L80 262 M118 224 L120 262 M130 222 L134 258" stroke="#e5dcc6" stroke-width="2"/>
+      <path d="M52 262 Q76 268 96 258 M104 258 Q124 268 148 262" stroke="#F5A524" stroke-width="3" fill="none"/>
+      <rect x="70" y="264" width="14" height="18" fill="#9fb0c6"/><rect x="116" y="264" width="14" height="18" fill="#9fb0c6"/>
+      <ellipse cx="74" cy="286" rx="16" ry="6" fill="#8a5a2b"/><ellipse cx="126" cy="286" rx="16" ry="6" fill="#8a5a2b"/>
+    </svg>
+    <div>
+      <div class="eyebrow" style="color:#7fe3d3">Training show · 7 episodes · one story</div>
+      <h1>Meet BHIM, Bharat's Helpful Intelligent Mentor</h1>
+      <p>Fictional company <b>AutoDesh Motors</b> builds an AI sales and service assistant. Each episode solves the next problem it hits. Every episode: BHIM runs the guided demo with voice, then you press <b>🙋 Your turn</b> and repeat the same moves. <b>⏮ Back</b> reverts any step.</p>
+      <p style="font-size:12.5px">All prices and scores inside the episodes are toy numbers. Incidents are flagged "verify before quoting".</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Episodes</div>
+    <h2>Pick an episode (works offline, no internet needed)</h2>
+    <div class="eps" id="eps"></div>
+  </section>
+
+  <section class="card" id="runCard">
+    <div class="eyebrow">Run sheet</div>
+    <h2>60-minute session timer</h2>
+    <div class="tabs" id="tabs"><button data-p="C" class="on">One session · all 7 demos</button><button data-p="A">Session 1 · Trust basics</button><button data-p="B">Session 2 · Build and govern</button></div>
+    <div class="timer">
+      <div class="clock" id="clock">05:00</div>
+      <div><div class="now" id="now">Ready</div><div class="note" id="total" style="margin:2px 0 0">Total 60 min</div></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="pri" id="tStart">▶ Start</button><button id="tNext">⏭ Next block</button><button id="tReset">↺ Reset</button></div>
+    </div>
+    <div class="tbl"><table class="rs"><thead><tr><th>Time</th><th>Block</th><th>Min</th><th>What to do</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <p class="note">Suggested timings; each guided demo runs about 6 to 8 minutes at 1x speed, so in the one-session plan play BHIM at Speed 1.25x and use Jump to step for the key moments, then repeat the first 5 or 6 moves in Your turn. Tip: pause BHIM after a "Real incident" popup and ask the room for their own example.</p>
+  </section>
+</div>
+<script>
+const EPS=[
+ {n:1,t:'The ₹1 SUV',c:'Jailbreak, direct and indirect prompt injection, defence in depth',u:'ep1.html'},
+ {n:2,t:'The refund that never existed',c:'Hallucination, grounding, citations, the abstain rule',u:'ep2.html'},
+ {n:3,t:'The bill that exploded',c:'Tokens, model routing, caching, budget caps, runaway agent loops',u:'ep3.html'},
+ {n:4,t:'AI or automation?',c:'Rules, API, LLM or agent: pick the cheapest tool that works',u:'ep4.html'},
+ {n:5,t:'Agents talk',c:'MCP vs A2A, tool poisoning, least privilege',u:'ep5.html'},
+ {n:6,t:'Privacy and law',c:'PII masking, DPDP Act India, EU AI Act risk tiers',u:'ep6.html'},
+ {n:7,t:'Can we trust it?',c:'Golden set evals, LLM-as-judge, release gate, kill criteria',u:'ep7.html'}];
+document.getElementById('eps').innerHTML=EPS.map(e=>`<div class="ep"><span class="n">Episode ${e.n}</span><h3>${e.t}</h3><p>${e.c}</p><span class="tag">⏱ 7 to 8 min in the 60-min plan</span><a href="${e.u}">Open episode ${e.n} ↗</a></div>`).join('');
+const PLANS={
+ C:[['Open','Meet BHIM, AutoDesh story, agenda',3],['Ep 1 · The ₹1 SUV','News 2 · teach 1 · BHIM demo 3 · your turn 2',8],['Ep 2 · Hallucination','News 2 · teach 1 · BHIM demo 3 · your turn 2',8],['Ep 3 · Cost control','News 1.5 · teach 1 · BHIM demo 2.5 · your turn 2',7],['Ep 4 · AI or automation?','News 1.5 · teach 1 · BHIM demo 2.5 · your turn 2',7],['Ep 5 · Agents talk','News 1.5 · teach 1 · BHIM demo 2.5 · your turn 2',7],['Ep 6 · Privacy and law','News 2 · teach 1 · BHIM demo 3 · your turn 2',8],['Ep 7 · Can we trust it?','News 1.5 · teach 1 · BHIM demo 2.5 · your turn 2',7],['Close','Recap ladder of 7 lessons, questions, Dhanyavaad',5]],
+ A:[['Open','Meet BHIM and AutoDesh: ask "who has seen a chatbot go wrong?"',5],['Ep 1 · The ₹1 SUV','Guided demo, then quiz by show of hands',12],['Ep 2 · Hallucination','Guided demo, move the abstain threshold live',12],['Ep 3 · Cost control','Guided demo; ask for one real bill from the room',11],['Ep 7 · Evals','Guided demo; each table writes one golden case',12],['Wrap','3 takeaways, questions, point to the Hub for Session 2',8]],
+ B:[['Recap','Recall Session 1 in 3 lines; quick quiz rematch',5],['Ep 4 · AI or automation?','Guided demo; audience sorts the last tasks',12],['Ep 5 · Agents talk','Guided demo; ask who owns your tool register',12],['Ep 6 · Privacy and law','Guided demo; audience sorts the last 4 use cases',13],['Exercise','Pairs pick one use case and write: right-sized tool, 2 risks, 1 golden case',10],['Wrap','Takeaways and questions',8]]};
+let plan='C',idx=0,left=0,tick=null;
+const $=s=>document.querySelector(s);
+const fmt=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+function render(){
+  let t=0;$('#rows').innerHTML=PLANS[plan].map((b,i)=>{const r=`<tr class="${i===idx&&tick?'cur':i<idx?'done':''}"><td>${fmt(t*60).slice(0,2)}-${String(t+b[2]).padStart(2,'0')} min</td><td><b>${b[0]}</b></td><td>${b[2]}</td><td>${b[1]}</td></tr>`;t+=b[2];return r}).join('');
+  $('#total').textContent='Total '+PLANS[plan].reduce((a,b)=>a+b[2],0)+' min';
+  $('#clock').textContent=fmt(left);
+  $('#now').textContent=idx>=PLANS[plan].length?'Session complete. Dhanyavaad!':(tick?'Now: ':'Next: ')+PLANS[plan][idx][0];
+  $('#tStart').textContent=tick?'⏸ Pause':'▶ Start';
+}
+function reset(){clearInterval(tick);tick=null;idx=0;left=PLANS[plan][0][2]*60;render()}
+function next(){idx++;if(idx>=PLANS[plan].length){clearInterval(tick);tick=null;left=0}else left=PLANS[plan][idx][2]*60;render()}
+$('#tStart').onclick=()=>{if(idx>=PLANS[plan].length)reset();if(tick){clearInterval(tick);tick=null}else tick=setInterval(()=>{left--;if(left<=0)next();else $('#clock').textContent=fmt(left)},1000);render()};
+$('#tNext').onclick=next;$('#tReset').onclick=reset;
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');plan=b.dataset.p;reset()});
+reset();
+</script>
+
+</body></html>

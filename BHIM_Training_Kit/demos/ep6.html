@@ -1,0 +1,741 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><style>
+#quizCard{display:none!important}
+nav.eps a{font-size:12px;padding:4px 9px;border-radius:20px;background:#ffffff14;color:#cfd6e6;text-decoration:none}
+nav.eps a.on{background:var(--teal);color:#fff;font-weight:700}
+nav.eps a:hover{background:#ffffff30}
+.mode{display:inline-block;font-size:11px;font-weight:800;letter-spacing:1.2px;background:#ffffff1a;color:#7fe3d3;padding:3px 10px;border-radius:10px;margin-top:4px}
+.ytmode .mode{background:var(--amber);color:var(--navy)}
+#sub .w{opacity:.42;transition:opacity .15s}
+#sub .w.on{opacity:1}
+#bot.talk{animation:bob .9s ease-in-out infinite alternate}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-4px) rotate(.6deg)}}
+#bot .eye{transition:translate .4s}
+#spot{position:absolute;z-index:44;pointer-events:none;border-radius:14px;box-shadow:0 0 0 9999px rgba(15,27,51,.40);transition:left .45s,top .45s,width .45s,height .45s;display:none}
+#pop.enter{animation:popIn .42s cubic-bezier(.2,1.4,.4,1)}
+#pop.real.enter{animation:popIn .42s cubic-bezier(.2,1.4,.4,1),jolt .5s .42s}
+@keyframes popIn{from{opacity:0;transform:translateY(10px) scale(.92)}to{opacity:1;transform:none}}
+@keyframes jolt{20%,60%{transform:translateX(-4px)}40%,80%{transform:translateX(4px)}}
+.zone.land{animation:land .6s}
+@keyframes land{0%{box-shadow:0 0 0 0 #1FB5A0aa}100%{box-shadow:0 0 0 18px #1FB5A000}}
+.spark{position:absolute;z-index:55;width:7px;height:7px;margin:-3px;border-radius:50%;background:var(--amber);pointer-events:none;animation:spark .7s ease-out forwards}
+@keyframes spark{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+.conf{position:absolute;z-index:70;width:9px;height:14px;border-radius:2px;pointer-events:none}
+.yt-target{outline:3px dashed var(--amber)!important;outline-offset:3px;animation:ytp 1s infinite}
+.yt-zone{background:#fff6e0!important;border-color:var(--amber)!important;border-style:dashed!important}
+@keyframes ytp{50%{outline-color:#f5a52433}}
+#ytPanel{position:fixed;right:16px;bottom:16px;width:370px;max-width:calc(100vw - 32px);z-index:65;background:#0F1B33f2;color:#fff;border-radius:14px;padding:12px;text-align:left;box-shadow:0 14px 40px #0f1b3366;border-top:5px solid var(--amber)}
+#ytPanel .yth{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+#ytList{margin:0 0 8px;padding-left:22px;max-height:230px;overflow:auto;font-size:12.5px;line-height:1.35}
+#ytList li{margin:3px 0;color:#aeb7cc}
+#ytList li.cur{color:#fff;font-weight:600}
+#ytList li.done{color:#7fe3d3;text-decoration:line-through}
+#rewind{position:fixed;inset:0;z-index:80;background:rgba(15,27,51,.55);color:#fff;font:700 20px system-ui,sans-serif;display:none;align-items:center;justify-content:center}
+#rewind.on{display:flex}
+#jumpSel{width:100%}
+.rise{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}
+.rise.in{opacity:1;transform:none}
+</style>
+</head><body>
+<title>BHIM AI Show · Ep 6 · Privacy and law (PII masking, DPDP Act, EU AI Act)</title>
+<style>
+:root{--navy:#0F1B33;--navy2:#18284a;--paper:#F4F6FA;--teal:#1FB5A0;--amber:#F5A524;--red:#E5484D;--green:#2BB673;--ink:#1d2433;--muted:#5b6478}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--paper);color:var(--ink)}
+header{background:var(--navy);color:#fff;padding:10px 18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+header .logo{font-weight:800;font-size:18px;letter-spacing:.5px}
+header .logo b{color:var(--amber)}
+nav.eps{display:flex;gap:6px;flex-wrap:wrap}
+nav.eps span{font-size:12px;padding:4px 9px;border-radius:20px;background:#ffffff14;color:#cfd6e6}
+nav.eps span.on{background:var(--teal);color:#fff;font-weight:700}
+.wrap{display:grid;grid-template-columns:300px 1fr;gap:16px;padding:16px;max-width:1400px;margin:auto}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}}
+.host{position:sticky;top:10px;align-self:start;background:var(--navy);color:#fff;border-radius:16px;padding:14px;text-align:center}
+.host h2{margin:4px 0 0;font-size:22px;letter-spacing:3px;color:var(--amber)}
+.host .ff{font-size:12px;color:#cfd6e6;margin-bottom:8px}
+#bot{width:200px;height:auto;display:block;margin:auto}
+#bot .mouth rect{transition:height .1s}
+#bot.talk .mouth rect{animation:talk .25s infinite alternate}
+#bot.talk .mouth rect:nth-child(2){animation-delay:.08s}
+#bot.talk .mouth rect:nth-child(3){animation-delay:.16s}
+@keyframes talk{from{height:2px;transform:translateY(2px)}to{height:8px;transform:translateY(-1px)}}
+#bot .eye{animation:blink 4s infinite;transform-origin:center;transform-box:fill-box}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+#bot .arm-r{transform-origin:150px 135px;transform-box:view-box}
+#bot.wave .arm-r{animation:wave .5s 4 alternate}
+@keyframes wave{from{transform:rotate(0)}to{transform:rotate(-55deg)}}
+#bot .ant{animation:glow 1.6s infinite alternate}
+@keyframes glow{from{opacity:.5}to{opacity:1}}
+.sub{background:#ffffff12;border-radius:10px;padding:10px;min-height:88px;font-size:14px;line-height:1.4;text-align:left;margin:10px 0}
+.ctrls{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+button{font:inherit;border:0;border-radius:9px;padding:8px 12px;cursor:pointer;font-weight:600}
+.b-pri{background:var(--amber);color:var(--navy)}
+.b-sec{background:#ffffff1f;color:#fff}
+.b-run{background:var(--teal);color:#fff}
+.b-ghost{background:#e6eaf2;color:var(--ink)}
+button:disabled{opacity:.45;cursor:default}
+.prog{height:6px;background:#ffffff1f;border-radius:6px;margin:10px 0 4px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--amber);transition:width .4s}
+.small{font-size:11px;color:#aeb7cc}
+select{max-width:100%;font-size:12px;border-radius:6px;padding:4px;margin-top:6px}
+.scene{display:flex;flex-direction:column;gap:14px;min-width:0}
+.card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 10px #0f1b3314;min-width:0}
+.card h3{margin:0 0 4px;font-size:17px}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--teal);text-transform:uppercase}
+.hero{background:linear-gradient(120deg,var(--navy),#23396a);color:#fff}
+.hero h1{margin:4px 0;font-size:26px}
+.hero p{margin:4px 0;color:#d6ddeb}
+.story{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.story span{font-size:12px;background:#ffffff1a;padding:4px 10px;border-radius:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:1100px){.grid2{grid-template-columns:1fr}}
+.tray{display:flex;flex-wrap:wrap;gap:8px;min-height:44px;padding:8px;border:1px dashed #c9d1e0;border-radius:10px;margin:8px 0}
+.chip{user-select:none;cursor:grab;padding:8px 11px;border-radius:10px;font-size:12.5px;font-weight:600;line-height:1.3;max-width:100%;transition:transform .2s,box-shadow .2s}
+.chip.fld{background:#eef2ff;color:#25307a;border:1px solid #c3cbf5}
+.chip.grd{background:#e4f6f3;color:#0c5f53;border:1px solid #a8e2d8}
+.chip.tier{background:#fff4e0;color:#6b4300;border:1px solid #f2d39a}
+.chip.tier.ok{background:#e9f8f0;border-color:var(--green);color:#15734a}
+.chip.tier.no{background:#fdecec;border-color:var(--red);color:#8a1f22}
+.chip.lift{transform:scale(1.06);box-shadow:0 6px 18px #0003}
+.chip small{display:block;font-weight:400;font-size:11px;opacity:.85}
+.zone{min-height:58px;border:2px dashed #b9c3d6;border-radius:12px;padding:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12.5px;transition:background .2s}
+.zone.over{background:#fff6e0;border-color:var(--amber)}
+.zone.filled{border-style:solid;border-color:#d8dee9;justify-content:flex-start}
+.zone.multi{flex-wrap:wrap;gap:6px;align-items:flex-start;align-content:flex-start;justify-content:flex-start}
+.zone .zl{width:100%;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.rack{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(max-width:700px){.rack{grid-template-columns:1fr 1fr}}
+.rack .zone{min-height:84px;flex-direction:column;text-align:center}
+.tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(max-width:800px){.tiers{grid-template-columns:1fr 1fr}}
+.tiers .zone{min-height:120px}
+#tP{border-color:#e5484d88}#tH{border-color:#f5a524aa}#tT{border-color:#1fb5a0aa}#tM{border-color:#2bb67388}
+.preview{background:#0f1b33;color:#dfe6f3;border-radius:10px;padding:10px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;line-height:1.55;min-height:70px;margin-top:10px;overflow-wrap:anywhere}
+.preview .raw{background:#e5484d;color:#fff;border-radius:4px;padding:0 4px}
+.preview .msk{background:#f5a524;color:#0f1b33;border-radius:4px;padding:0 4px}
+.preview .drop{color:#7f8aa3;text-decoration:line-through}
+.preview .ok{color:#7fe3d3}
+.meter{height:14px;border-radius:8px;background:linear-gradient(90deg,var(--green),var(--amber),var(--red));position:relative;margin:10px 0 4px}
+.meter i{position:absolute;top:-5px;width:4px;height:24px;background:var(--navy);border-radius:2px;left:100%;transition:left .6s}
+.verdict{font-weight:700;font-size:14px;margin-top:6px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tests{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tests span{font-size:11.5px;padding:3px 8px;border-radius:10px;background:#eef1f7}
+.tests span.safe{background:#e9f8f0;color:#15734a}
+.tests span.fr{background:#ffe9c7;color:#7a4d00}
+.tests span.br{background:#fdecec;color:#8a1f22}
+.inc{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.inc div{border-left:4px solid var(--red);background:#fbfbfd;padding:10px;border-radius:8px;font-size:13px}
+.inc div.law{border-left-color:var(--teal)}
+.inc b{display:block;margin-bottom:3px}
+.inc em{display:block;color:var(--muted);font-style:normal;font-size:12px;margin-top:4px}
+.inc a{color:#0c5f53}
+.q{margin:10px 0;padding:10px;border-radius:10px;background:#f6f8fb}
+.q p{margin:0 0 6px;font-weight:600}
+.q button{display:block;width:100%;text-align:left;margin:4px 0;background:#fff;border:1px solid #dde3ee;font-weight:500}
+.q button.right{background:#e9f8f0;border-color:var(--green)}
+.q button.wrong{background:#fdecec;border-color:var(--red)}
+.q .why{font-size:12.5px;color:var(--muted);margin-top:4px}
+#hand{position:absolute;left:0;top:0;width:46px;height:46px;margin:-8px 0 0 -14px;pointer-events:none;z-index:50;opacity:0;transition:transform .7s cubic-bezier(.5,.1,.3,1),opacity .3s;font-size:34px;filter:drop-shadow(0 3px 4px #0005)}
+#hand.tap{animation:tap .25s}
+@keyframes tap{50%{scale:.8}}
+.ghost{position:fixed;z-index:49;pointer-events:none;transition:left .8s cubic-bezier(.5,.1,.3,1),top .8s cubic-bezier(.5,.1,.3,1);box-shadow:0 10px 24px #0004}
+#pop{position:absolute;z-index:60;max-width:330px;background:#fff;border-radius:14px;box-shadow:0 12px 30px #0f1b3340;padding:12px 14px;font-size:13.5px;line-height:1.4;display:none;border-top:6px solid var(--teal)}
+#pop.real{border-top-color:var(--red)}
+#pop.why{border-top-color:var(--amber)}
+#pop h4{margin:0 0 4px;font-size:14px}
+#pop .tag{font-size:10.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--teal)}
+#pop.real .tag{color:var(--red)}#pop.why .tag{color:#b67400}
+.hl{outline:3px solid var(--amber);outline-offset:3px;border-radius:12px;animation:pulse 1.2s infinite}
+@keyframes pulse{50%{outline-color:#f5a52455}}
+.next{background:linear-gradient(120deg,#fff6e0,#fff)}
+kbd{background:#ffffff22;border-radius:4px;padding:1px 5px;font-size:11px}
+.note{font-size:12px;color:var(--muted);margin-top:8px}
+</style>
+<header>
+  <div class="logo">🤖 BHIM <b>AI Show</b></div>
+  <nav class="eps" aria-label="Episodes">
+    <span>Ep 1 · Jailbreak</span><span>Ep 2 · Hallucination</span><span>Ep 3 · Cost control</span><span>Ep 4 · AI or automation?</span><span>Ep 5 · Agents talk (MCP + A2A)</span><span class="on">Ep 6 · Privacy and law</span><span>Ep 7 · Evals and trust</span>
+  </nav>
+</header>
+
+<div class="wrap">
+<aside class="host">
+  <svg id="bot" viewBox="0 0 200 300" role="img" aria-label="BHIM, a friendly AI robot wearing a kurta and dhoti">
+    <defs>
+      <linearGradient id="metal" x1="0" x2="1"><stop offset="0" stop-color="#cfd9e6"/><stop offset=".5" stop-color="#f3f6fa"/><stop offset="1" stop-color="#9fb0c6"/></linearGradient>
+      <linearGradient id="kurta" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fffaf0"/><stop offset="1" stop-color="#efe6d2"/></linearGradient>
+    </defs>
+    <line x1="100" y1="22" x2="100" y2="40" stroke="#9fb0c6" stroke-width="4"/>
+    <circle class="ant" cx="100" cy="18" r="7" fill="#F5A524"/>
+    <rect x="58" y="38" width="84" height="68" rx="22" fill="url(#metal)" stroke="#7d8da6" stroke-width="2"/>
+    <rect x="50" y="62" width="10" height="22" rx="4" fill="#7d8da6"/><rect x="140" y="62" width="10" height="22" rx="4" fill="#7d8da6"/>
+    <rect x="68" y="52" width="64" height="34" rx="14" fill="#0F1B33"/>
+    <ellipse class="eye" cx="86" cy="68" rx="7" ry="8" fill="#5ff2dc"/>
+    <ellipse class="eye" cx="114" cy="68" rx="7" ry="8" fill="#5ff2dc"/>
+    <circle cx="88" cy="65" r="2" fill="#fff"/><circle cx="116" cy="65" r="2" fill="#fff"/>
+    <g class="mouth" fill="#5ff2dc"><rect x="90" y="92" width="5" height="3" rx="1"/><rect x="98" y="92" width="5" height="3" rx="1"/><rect x="106" y="92" width="5" height="3" rx="1"/></g>
+    <rect x="90" y="106" width="20" height="10" fill="#9fb0c6"/>
+    <!-- arms -->
+    <g><rect x="34" y="124" width="18" height="62" rx="9" fill="url(#kurta)" stroke="#d8cdb4"/><circle cx="43" cy="192" r="9" fill="url(#metal)" stroke="#7d8da6"/></g>
+    <g class="arm-r"><rect x="148" y="124" width="18" height="62" rx="9" fill="url(#kurta)" stroke="#d8cdb4"/><circle cx="157" cy="192" r="9" fill="url(#metal)" stroke="#7d8da6"/></g>
+    <!-- kurta -->
+    <path d="M52 120 Q100 108 148 120 L156 214 Q100 224 44 214 Z" fill="url(#kurta)" stroke="#d8cdb4" stroke-width="2"/>
+    <rect x="88" y="113" width="24" height="9" rx="3" fill="#1FB5A0"/>
+    <line x1="100" y1="122" x2="100" y2="166" stroke="#1FB5A0" stroke-width="3"/>
+    <circle cx="100" cy="132" r="2.4" fill="#F5A524"/><circle cx="100" cy="144" r="2.4" fill="#F5A524"/><circle cx="100" cy="156" r="2.4" fill="#F5A524"/>
+    <rect x="114" y="140" width="26" height="12" rx="3" fill="#0F1B33"/><text x="127" y="149.5" font-size="8" text-anchor="middle" fill="#F5A524" font-weight="700" font-family="sans-serif">BHIM</text>
+    <path d="M46 206 Q100 216 154 206" stroke="#1FB5A0" stroke-width="3" fill="none"/>
+    <!-- dhoti -->
+    <path d="M58 214 Q100 222 142 214 L148 262 Q124 268 104 258 L100 236 L96 258 Q76 268 52 262 Z" fill="#fffdf7" stroke="#d8cdb4" stroke-width="2"/>
+    <path d="M70 222 L66 258 M82 224 L80 262 M118 224 L120 262 M130 222 L134 258" stroke="#e5dcc6" stroke-width="2"/>
+    <path d="M52 262 Q76 268 96 258 M104 258 Q124 268 148 262" stroke="#F5A524" stroke-width="3" fill="none"/>
+    <rect x="70" y="264" width="14" height="18" fill="#9fb0c6"/><rect x="116" y="264" width="14" height="18" fill="#9fb0c6"/>
+    <ellipse cx="74" cy="286" rx="16" ry="6" fill="#8a5a2b"/><ellipse cx="126" cy="286" rx="16" ry="6" fill="#8a5a2b"/>
+  </svg>
+  <h2>B·H·I·M</h2>
+  <div class="ff">Bharat's Helpful Intelligent Mentor</div>
+  <div class="sub" id="sub">Namaste! Press <b>Play guided demo</b> and I will run the whole show: I drag, I explain, I pop up the key points. Or drag the cards yourself.</div>
+  <div class="ctrls">
+    <button class="b-pri" id="bPlay">▶ Play guided demo</button>
+    <button class="b-sec" id="bPause">⏸ Pause</button>
+    <button class="b-sec" id="bNext">⏭ Next</button>
+    <button class="b-sec" id="bRestart">↺ Restart</button>
+  </div>
+  <div class="prog"><i id="progBar"></i></div>
+  <div class="small" id="progTxt">Step 0 of 0</div>
+  <div class="ctrls" style="margin-top:8px">
+    <button class="b-sec" id="bVoice">🔊 Voice on</button>
+    <button class="b-sec" id="bSpeed">Speed 1x</button>
+  </div>
+  <select id="voiceSel" aria-label="Voice"></select>
+  <div class="small" style="margin-top:6px">Tip: on Windows Edge pick an "English (India)" voice such as Prabhat or Neerja for a clean Indian English accent. Keys: <kbd>Space</kbd> play or pause, <kbd>→</kbd> next.</div>
+</aside>
+
+<main class="scene">
+  <section class="card hero" id="hero">
+    <div class="eyebrow" style="color:#7fe3d3">Episode 6 · Privacy and law</div>
+    <h1>Whose data is it anyway?</h1>
+    <p><b>AutoDesh Motors</b> (fictional) now sends service complaints to an external LLM to draft replies, and plans to sell in Europe. BHIM shows what must never leave the building, how India's DPDP Act frames it, and how the EU AI Act sorts AI uses into risk tiers.</p>
+    <div class="story"><span>🎯 Goal: PII masking and privacy by design</span><span>⚖️ Law: DPDP Act (India) + EU AI Act tiers</span><span>⏱ 10 to 12 min in a 1-hour session</span><span>⚠️ Training aid, not legal advice</span></div>
+  </section>
+
+  <div class="grid2">
+    <section class="card" id="maskCard">
+      <div class="eyebrow">Step A · The data flow</div>
+      <h3>Service-desk prompt builder</h3>
+      <div class="small" style="color:var(--muted)">Customer record fields (all fictional; drag into the prompt, or click):</div>
+      <div class="tray" id="fieldTray">
+        <div class="chip fld" draggable="true" id="f1" data-kind="fld">👤 Name<small>Ravi Kumar (fictional)</small></div>
+        <div class="chip fld" draggable="true" id="f2" data-kind="fld">📱 Phone<small>98xxx xxx01 (fake)</small></div>
+        <div class="chip fld" draggable="true" id="f3" data-kind="fld">🪪 Aadhaar number<small>XXXX XXXX 1234 (fake)</small></div>
+        <div class="chip fld" draggable="true" id="f4" data-kind="fld">💬 Complaint text<small>"AC not cooling since service. Call me on 98xxx xxx01."</small></div>
+        <div class="chip fld" draggable="true" id="f5" data-kind="fld">🚗 Car and service date<small>Toofan SUV, serviced last week</small></div>
+        <div class="chip fld" draggable="true" id="f6" data-kind="fld">💰 Monthly income<small>From the old loan file (toy value)</small></div>
+      </div>
+      <div class="zone multi" id="promptZone" data-accept="fld" data-multi="1"><div class="zl">Prompt to external LLM</div></div>
+      <div class="small" style="color:var(--muted);margin-top:10px">Privacy guards (4 slots):</div>
+      <div class="tray" id="guardTray">
+        <div class="chip grd" draggable="true" id="mask" data-kind="grd">🎭 PII masker<small>Swaps names, phone and ID numbers for tokens, also inside free text</small></div>
+        <div class="chip grd" draggable="true" id="mini" data-kind="grd">✂️ Data minimiser<small>Drops fields the task does not need</small></div>
+        <div class="chip grd" draggable="true" id="notice" data-kind="grd">📋 Notice and consent<small>Customer told what is used, why, and can withdraw</small></div>
+        <div class="chip grd" draggable="true" id="ret" data-kind="grd">🗑 Retention and delete<small>No training on our data, auto-delete after the case closes</small></div>
+      </div>
+      <div class="rack" id="rack">
+        <div class="zone" data-accept="grd" id="g1">Slot 1</div><div class="zone" data-accept="grd" id="g2">Slot 2</div><div class="zone" data-accept="grd" id="g3">Slot 3</div><div class="zone" data-accept="grd" id="g4">Slot 4</div>
+      </div>
+      <div class="row" style="margin-top:10px"><button class="b-run" id="bRun">Send to LLM ▶</button><button class="b-ghost" id="bClear">Clear guards</button></div>
+      <div class="preview" id="preview">What the model will receive appears here.</div>
+      <div class="meter" id="meterBox"><i id="meter"></i></div>
+      <div class="small" style="color:var(--muted);display:flex;justify-content:space-between"><span>Privacy by design</span><span>Needs work</span><span>Leaking</span></div>
+      <div class="verdict" id="verdict">No test yet.</div>
+      <div class="tests" id="tests"><span id="t-raw">Raw personal data: not tested</span><span id="t-min">Unneeded fields: not tested</span><span id="t-not">Notice: not tested</span><span id="t-ret">Retention: not tested</span></div>
+    </section>
+
+    <section class="card" id="tierCard">
+      <div class="eyebrow">Step B · The law</div>
+      <h3>EU AI Act risk tiers: sort AutoDesh's AI uses</h3>
+      <div class="small" style="color:var(--muted)">Use cases (drag into a tier, or click to cycle tiers):</div>
+      <div class="tray" id="tierTray">
+        <div class="chip tier" draggable="true" id="u1" data-kind="tier" data-tier="tT">🤖 Sales chatbot on the website<small>Talks to customers</small></div>
+        <div class="chip tier" draggable="true" id="u2" data-kind="tier" data-tier="tH">🏦 Car-loan credit scoring<small>Scores applicants' creditworthiness</small></div>
+        <div class="chip tier" draggable="true" id="u3" data-kind="tier" data-tier="tP">😠 Emotion tracking of staff<small>Webcam AI scores workshop staff's emotions</small></div>
+        <div class="chip tier" draggable="true" id="u4" data-kind="tier" data-tier="tM">📦 Spare-parts demand forecast<small>Predicts stock for workshops</small></div>
+        <div class="chip tier" draggable="true" id="u5" data-kind="tier" data-tier="tH">📄 CV screening for mechanics<small>Ranks job applicants</small></div>
+        <div class="chip tier" draggable="true" id="u6" data-kind="tier" data-tier="tT">🎬 AI-generated ad video<small>Realistic synthetic people in an advert</small></div>
+        <div class="chip tier" draggable="true" id="u7" data-kind="tier" data-tier="tP">🧮 Lifestyle "social score"<small>Ranks customers by unrelated social behaviour to refuse service</small></div>
+        <div class="chip tier" draggable="true" id="u8" data-kind="tier" data-tier="tM">📧 Email spam filter<small>Sorts the inbox</small></div>
+      </div>
+      <div class="tiers" id="tiers">
+        <div class="zone multi" id="tP" data-accept="tier" data-multi="1"><div class="zl">🚫 Prohibited</div></div>
+        <div class="zone multi" id="tH" data-accept="tier" data-multi="1"><div class="zl">⚠️ High-risk</div></div>
+        <div class="zone multi" id="tT" data-accept="tier" data-multi="1"><div class="zl">👁 Transparency</div></div>
+        <div class="zone multi" id="tM" data-accept="tier" data-multi="1"><div class="zl">✅ Minimal</div></div>
+      </div>
+      <div class="row" style="margin-top:10px"><button class="b-run" id="bCheck">Check tiers ✔</button><button class="b-ghost" id="bTierReset">Reset tiers</button></div>
+      <div class="verdict" id="tierScore">Not checked yet.</div>
+      <div class="note" id="dates"><b>Key EU AI Act dates</b> (EU AI Act Service Desk, checked 22 Nov 2026): in force 1 Aug 2024 · prohibitions and AI literacy 2 Feb 2025 · general-purpose AI rules 2 Aug 2025 · transparency (Art 50) 2 Aug 2026 · high-risk (Annex III uses such as credit scoring, hiring) now 2 Dec 2027, moved from 2 Aug 2026 by the Digital Omnibus on AI (published in the EU Official Journal 24 Jul 2026, per FPF). Simplified for training: real classification depends on the exact use and exemptions.</div>
+    </section>
+  </div>
+
+  <section class="card" id="whyCard">
+    <div class="eyebrow">Why this matters</div>
+    <h3>Once data leaves, you cannot call it back</h3>
+    <div class="grid2" style="font-size:13.5px">
+      <div><b>For managers:</b> every prompt sent to an outside model is a data transfer. Ask: what personal data is in it, is it needed, was the customer told, and where is it stored and for how long? Fines are set per violation, not per company size.</div>
+      <div><b>For engineers:</b> mask before you send, minimise before you mask, log what left, and choose a provider setting that does not train on or keep your data. Free text is the leakiest field: people type phone numbers into complaints.</div>
+    </div>
+    <p style="font-size:13.5px;margin:10px 0 0"><b>DPDP</b> = India's Digital Personal Data Protection Act, 2023. <b>PII</b> = personally identifiable information. <b>EU AI Act</b> = the EU's risk-based AI law; it reaches AutoDesh only if it offers AI systems in the EU or their output is used there.</p>
+  </section>
+
+  <section class="card" id="incCard">
+    <div class="eyebrow">Real incident and the law (open the original sources before quoting details)</div>
+    <h3>This already happened, and the rules now exist</h3>
+    <div class="inc">
+      <div><b>2023 · Samsung staff and ChatGPT</b>Employees were widely reported to have pasted internal source code and meeting notes into ChatGPT. Samsung then restricted staff use of generative AI tools.<em>Lesson: the leak is the paste, not a hack. Mask, minimise, set a policy. Verify details before quoting.</em></div>
+      <div class="law"><b>India · DPDP Act 2023 and DPDP Rules 2025</b>Rules notified Nov 2025 and phased in: Data Protection Board at once; consent manager registration from Nov 2026; core duties (notice, consent, security safeguards, breach notice, children's data) from May 2027. Penalties up to ₹250 crore for failing security safeguards, ₹200 crore for breach notice or children's data failures.<em>Sources: PIB note of 17 Nov 2025; AZB &amp; Partners timeline. Sources differ by a day on the notification date (13 or 14 Nov 2025). Confirm in the Gazette.</em></div>
+      <div class="law"><b>EU · AI Act</b>Prohibited practices (for example emotion recognition at work, social scoring) apply since 2 Feb 2025. High-risk duties for uses like credit scoring and hiring now start 2 Dec 2027 after the Digital Omnibus delay.<em>Source: EU AI Act Service Desk timeline; FPF analysis. Not legal advice.</em></div>
+      <div><b>Your turn</b>Ask the room: which tool did someone in your team paste customer data into this month?<em>Lesson: build the PII register from real habits.</em></div>
+    </div>
+  </section>
+
+  <section class="card" id="quizCard">
+    <div class="eyebrow">Check yourself</div>
+    <h3>3 quick questions for the audience</h3>
+    <div id="quiz"></div>
+    <div class="verdict" id="score"></div>
+  </section>
+
+  <section class="card next" id="nextCard">
+    <div class="eyebrow">Next episode</div>
+    <h3>Ep 7 · Can we trust it? (evals and monitoring)</h3>
+    <p style="font-size:13.5px;margin:4px 0 0">AutoDesh's bot is safe, grounded, cheap, wired and private. But how do we prove it still works after next week's model update? BHIM builds a golden test set, uses an LLM as a judge, and sets kill criteria.</p>
+  </section>
+</main>
+</div>
+<div id="hand">👆</div>
+<div id="pop"></div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let fast=false, voiceOn=true, rate=1, voice=null, voices=[];
+const wait=ms=>new Promise(r=>setTimeout(r,fast?Math.min(ms,30):ms/rate));
+const bot=$('#bot');
+
+/* ---------- voice ---------- */
+const hasTTS=('speechSynthesis' in window)&&typeof SpeechSynthesisUtterance!=='undefined';
+function loadVoices(){
+  if(!hasTTS){$('#voiceSel').innerHTML='<option>Browser voice not available (subtitles only)</option>';return;}
+  voices=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));
+  const rank=v=>(/en[-_]IN/i.test(v.lang)?10:0)+(/prabhat|ravi|hemant|male/i.test(v.name)?4:0)+(/natural|online|google/i.test(v.name)?2:0);
+  voices.sort((a,b)=>rank(b)-rank(a));
+  $('#voiceSel').innerHTML=voices.length?voices.map((v,i)=>`<option value="${i}">${v.name} (${v.lang})</option>`).join(''):'<option>No English voice found (subtitles only)</option>';
+  voice=voices[0]||null;
+}
+if(hasTTS){loadVoices();speechSynthesis.onvoiceschanged=loadVoices;}else loadVoices();
+$('#voiceSel').onchange=e=>{voice=voices[+e.target.value]||null};
+function speakable(t){return t.replace(/₹\s?(\d+)\s?crore/g,'$1 crore rupees').replace(/₹/g,'rupees ').replace(/\bDPDP\b/g,'D P D P').replace(/\bPII\b/g,'P I I').replace(/\bLLM\b/g,'L L M').replace(/\bAI\b/g,'A I').replace(/\bEU\b/g,'E U')}
+function say(t){
+  $('#sub').innerHTML=t;
+  const plain=t.replace(/<[^>]+>/g,'');
+  bot.classList.add('talk');
+  return new Promise(res=>{
+    let fin=false; const done=()=>{if(fin)return;fin=true;bot.classList.remove('talk');res()};
+    if(fast){done();return}
+    if(!voiceOn||!hasTTS||!voice){setTimeout(done,(1200+plain.length*55)/rate);return}
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(speakable(plain));
+    u.voice=voice;u.lang=voice.lang;u.rate=0.95*rate;u.pitch=1.02;
+    u.onend=done;u.onerror=done;
+    setTimeout(done,(4000+plain.length*110)/rate);
+    speechSynthesis.speak(u);
+  });
+}
+const stopVoice=()=>{if(hasTTS)speechSynthesis.cancel()};
+
+/* ---------- hand, drag, popup ---------- */
+const hand=$('#hand'), pop=$('#pop');
+async function show(el){el.scrollIntoView({behavior:fast?'auto':'smooth',block:'center'});await wait(450)}
+async function moveTo(el){
+  const r=el.getBoundingClientRect();
+  hand.style.transition=fast?'none':'';
+  hand.style.opacity=1;
+  hand.style.transform=`translate(${r.left+r.width/2+scrollX}px,${r.top+r.height/2+scrollY}px)`;
+  await wait(750);
+}
+async function tap(el){await show(el);await moveTo(el);hand.classList.add('tap');await wait(260);hand.classList.remove('tap');el.click();await wait(300)}
+async function drag(chip,zone){
+  await show(chip);await moveTo(chip);chip.classList.add('lift');await wait(300);
+  const a=chip.getBoundingClientRect(), b=zone.getBoundingClientRect();
+  const g=chip.cloneNode(true);g.removeAttribute('id');g.classList.add('ghost');g.style.left=a.left+'px';g.style.top=a.top+'px';g.style.width=a.width+'px';
+  if(fast)g.style.transition='none';
+  document.body.appendChild(g);chip.style.opacity=.3;
+  await wait(30);
+  const tx=b.left+8, ty=b.top+8;
+  g.style.left=tx+'px';g.style.top=ty+'px';
+  hand.style.transform=`translate(${tx+a.width/2+scrollX}px,${ty+a.height/2+scrollY}px)`;
+  await wait(850);
+  g.remove();chip.style.opacity='';chip.classList.remove('lift');
+  place(chip,zone);await wait(250);
+}
+function clearPop(){pop.style.display='none';$$('.hl').forEach(e=>e.classList.remove('hl'))}
+async function popup(el,kind,tag,title,html){
+  clearPop();await show(el);
+  el.classList.add('hl');
+  pop.className=kind;pop.innerHTML=`<div class="tag">${tag}</div><h4>${title}</h4>${html}`;
+  pop.style.display='block';
+  const r=el.getBoundingClientRect(), pw=Math.min(330,innerWidth-20);
+  let left=r.right+14; if(left+pw>innerWidth-10) left=Math.max(10,r.left+r.width/2-pw/2);
+  let top=r.top; if(left<r.right && left+pw>r.left) top=r.bottom+12;
+  pop.style.left=(left+scrollX)+'px';pop.style.top=(top+scrollY)+'px';
+}
+
+/* ---------- scene model ---------- */
+/* personal: is it personal data; need: does the reply-drafting task need it; tok: masked form */
+const FLD={f1:{n:'name',raw:'Ravi Kumar',personal:true,need:false,tok:'[NAME_1]'},
+           f2:{n:'phone',raw:'98xxx xxx01',personal:true,need:false,tok:'[PHONE_1]'},
+           f3:{n:'aadhaar',raw:'XXXX XXXX 1234',personal:true,need:false,tok:'[ID_1]'},
+           f4:{n:'complaint',raw:'AC not cooling since service. Call me on 98xxx xxx01.',personal:true,need:true,tok:'AC not cooling since service. Call me on [PHONE_1].'},
+           f5:{n:'car',raw:'Toofan SUV, serviced last week',personal:false,need:true,tok:'Toofan SUV, serviced last week'},
+           f6:{n:'income',raw:'₹ (toy value)',personal:true,need:false,tok:'[INCOME]'}};
+const homes={fld:'#fieldTray',grd:'#guardTray',tier:'#tierTray'};
+const LABEL={promptZone:'Prompt to external LLM',tP:'🚫 Prohibited',tH:'⚠️ High-risk',tT:'👁 Transparency',tM:'✅ Minimal'};
+function place(chip,zone){
+  if(!zone||zone.dataset.accept!==chip.dataset.kind)return;
+  chip.classList.remove('ok','no');
+  if(zone.dataset.multi){zone.appendChild(chip);zone.classList.add('filled');refreshZones();return}
+  const old=zone.querySelector('.chip'); if(old&&old!==chip) $(homes[old.dataset.kind]).appendChild(old);
+  zone.textContent='';zone.appendChild(chip);zone.classList.add('filled');refreshZones();
+}
+function refreshZones(){
+  $$('.zone').forEach(z=>{
+    if(z.dataset.multi){if(!z.querySelector('.zl')){const l=document.createElement('div');l.className='zl';l.textContent=LABEL[z.id];z.prepend(l)}z.classList.toggle('filled',!!z.querySelector('.chip'));return}
+    if(!z.querySelector('.chip')){z.classList.remove('filled');if(!z.textContent.trim())z.textContent='Slot '+z.id.slice(1)}
+  });
+}
+function rackIds(){return $$('#rack .chip').map(c=>c.id)}
+const TIERS=['tP','tH','tT','tM'];
+let dragId=null;
+$$('.chip').forEach(c=>{
+  c.addEventListener('dragstart',e=>{dragId=c.id;e.dataTransfer.setData('text/plain',c.id)});
+  c.addEventListener('click',()=>{
+    const k=c.dataset.kind, p=c.parentElement;
+    if(k==='tier'){const i=TIERS.indexOf(p.id);if(i===TIERS.length-1){$('#tierTray').appendChild(c);c.classList.remove('ok','no');refreshZones()}else place(c,$('#'+TIERS[i+1]));return}
+    if(p.classList.contains('zone')){$(homes[k]).appendChild(c);refreshZones();return}
+    const z=k==='fld'?$('#promptZone'):($$('#rack .zone').find(z=>!z.querySelector('.chip'))||null);
+    if(z)place(c,z);
+  });
+});
+$$('.zone').forEach(z=>{
+  z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('over')});
+  z.addEventListener('dragleave',()=>z.classList.remove('over'));
+  z.addEventListener('drop',e=>{e.preventDefault();z.classList.remove('over');const c=document.getElementById(e.dataTransfer.getData('text/plain')||dragId);if(c)place(c,z)});
+});
+function run(){
+  const f=$$('#promptZone .chip').map(c=>c.id);
+  if(!f.length){$('#verdict').textContent='Drop at least one field into the prompt first.';return null}
+  const g=rackIds(), M=g.includes('mask'), N=g.includes('mini'), C=g.includes('notice'), R=g.includes('ret');
+  let raw=0, extra=0;
+  const lines=f.map(id=>{const x=FLD[id];
+    if(N&&!x.need)return `<span class="drop">${x.n}: removed (not needed)</span>`;
+    if(!x.need)extra++;
+    if(x.personal&&!M){raw++;return `${x.n}: <span class="raw">${x.raw}</span>`}
+    if(x.personal)return `${x.n}: <span class="msk">${x.tok}</span>`;
+    return `${x.n}: <span class="ok">${x.raw}</span>`});
+  $('#preview').innerHTML='<span class="ok">Draft a polite reply to this service complaint.</span><br>'+lines.join('<br>');
+  const risk=Math.max(4,Math.min(96,raw*20+extra*8+(C?0:10)+(R?0:6)));
+  const gaps=[];if(extra)gaps.push(`${extra} unneeded field${extra>1?'s':''}`);if(!C)gaps.push('no notice to the customer');if(!R)gaps.push('no retention rule');
+  let v,cls;
+  if(raw){v=`LEAKING. ${raw} piece${raw>1?'s':''} of raw personal data went to an outside model.`;cls='br'}
+  else if(gaps.length){v='NEEDS WORK. No raw PII, but: '+gaps.join(', ')+'.';cls='fr'}
+  else {v='PRIVACY BY DESIGN. Only what the task needs, masked, with notice and a retention rule.';cls='safe'}
+  $('#meter').style.left=risk+'%';$('#verdict').textContent=v;
+  const set=(id,ok,t)=>{const e=$('#'+id);e.className=ok?'safe':'br';e.textContent=t};
+  set('t-raw',!raw,raw?`Raw personal data: ${raw} leaked`:'Raw personal data: none');
+  set('t-min',!extra,extra?`Unneeded fields: ${extra}`:'Unneeded fields: none');
+  set('t-not',C,C?'Notice: given':'Notice: missing');
+  set('t-ret',R,R?'Retention: set':'Retention: missing');
+  return cls;
+}
+$('#bRun').onclick=run;
+function clearGuards(){$$('#rack .chip').forEach(c=>$('#guardTray').appendChild(c));refreshZones()}
+$('#bClear').onclick=clearGuards;
+function checkTiers(){
+  const placed=$$('#tiers .chip');
+  if(!placed.length){$('#tierScore').textContent='Drop a use case into a tier first.';return null}
+  let ok=0;placed.forEach(c=>{const r=c.parentElement.id===c.dataset.tier;c.classList.toggle('ok',r);c.classList.toggle('no',!r);if(r)ok++});
+  const left=$$('#tierTray .chip').length;
+  $('#tierScore').textContent=`${ok} of ${placed.length} placed correctly${left?`, ${left} still to sort`:''}.${ok===8?' Shabash!':''}`;
+  return ok;
+}
+$('#bCheck').onclick=checkTiers;
+function resetTiers(){$$('#tiers .chip').forEach(c=>{c.classList.remove('ok','no');$('#tierTray').appendChild(c)});refreshZones();$('#tierScore').textContent='Not checked yet.'}
+$('#bTierReset').onclick=resetTiers;
+function resetScene(){
+  clearGuards();$$('#promptZone .chip').forEach(c=>$('#fieldTray').appendChild(c));resetTiers();refreshZones();
+  $('#preview').textContent='What the model will receive appears here.';$('#meter').style.left='100%';$('#verdict').textContent='No test yet.';
+  [['t-raw','Raw personal data'],['t-min','Unneeded fields'],['t-not','Notice'],['t-ret','Retention']].forEach(([i,n])=>{const t=$('#'+i);t.className='';t.textContent=n+': not tested'});
+  clearPop();hand.style.opacity=0;
+}
+
+/* ---------- quiz ---------- */
+const QUIZ=[
+ {q:'A service agent wants an external LLM to draft a reply to a complaint. What should happen first?',o:['Use a bigger model','Add "keep this confidential" to the prompt','Nothing, the provider is secure','Remove fields the task does not need and mask the personal data that remains'],a:3,why:'Minimise, then mask. A line in the prompt does not stop data leaving the building.'},
+ {q:'Under the EU AI Act, AI that scores car-loan applicants\' creditworthiness is usually:',o:['High-risk: risk management, data quality, human oversight and more','Prohibited','Minimal risk, no duties','Outside the Act'],a:0,why:'Creditworthiness scoring of people is a listed high-risk use (Annex III). Its duties now apply from 2 Dec 2027.'},
+ {q:'What is the main EU AI Act duty for AutoDesh\'s website sales chatbot?',o:['Register it as high-risk','It is banned','Tell people they are talking to an AI','None at all'],a:2,why:'Transparency tier: people must know they are interacting with an AI system (Article 50).'}];
+function renderQuiz(){
+  let score=0,done=0;
+  $('#quiz').innerHTML=QUIZ.map((x,i)=>`<div class="q" id="q${i}"><p>${i+1}. ${x.q}</p>${x.o.map((o,j)=>`<button data-i="${i}" data-j="${j}">${o}</button>`).join('')}<div class="why"></div></div>`).join('');
+  $('#score').textContent='';
+  $$('#quiz button').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i,j=+b.dataset.j,box=$('#q'+i);if(box.dataset.done)return;box.dataset.done=1;done++;
+    const ok=j===QUIZ[i].a;if(ok)score++;b.classList.add(ok?'right':'wrong');
+    box.querySelectorAll('button')[QUIZ[i].a].classList.add('right');
+    box.querySelector('.why').textContent=(ok?'✅ ':'❌ ')+QUIZ[i].why;
+    if(done===QUIZ.length)$('#score').textContent=`Score ${score} of ${QUIZ.length}. ${score===3?'Shabash! Trainer ready.':'Replay the guided demo once more.'}`;
+  });
+}
+renderQuiz();
+
+/* ---------- guided script ---------- */
+const S=[
+ async()=>{bot.classList.add('wave');await popup($('#hero'),'tip','Episode 6','Whose data is it anyway?','What must never leave the building, and what the law expects. Training aid, not legal advice.');await say('Namaste everyone! I am BHIM. Today AutoDesh sends customer complaints to an outside A I model. Let us see what leaks, and what the law says about it.');bot.classList.remove('wave')},
+ async()=>{await popup($('#maskCard'),'tip','Meet the flow','Service-desk prompt builder','All customer data here is fictional. The external LLM drafts replies for service agents.');await say('Here is the service desk tool. It builds a prompt from the customer record and sends it to an external L L M.')},
+ async()=>{await say('A busy agent just grabs everything. Name, Aadhaar number, and the complaint text.');await drag($('#f1'),$('#promptZone'));await drag($('#f3'),$('#promptZone'));await drag($('#f4'),$('#promptZone'))},
+ async()=>{await say('No guards in the rack. Send it.');await tap($('#bRun'));await popup($('#preview'),'why','Look closely','Even the complaint leaks','The customer typed a phone number into the free text. Free text is the leakiest field of all.');await say('Leaking! Three pieces of raw personal data went out. And look, even the complaint text carries a phone number.')},
+ async()=>{await popup($('#incCard'),'real','Real incident · 2023','Samsung staff and ChatGPT','Employees were widely reported to have pasted internal source code and notes into ChatGPT. Samsung then restricted generative AI use. Verify details before quoting.');await say('This is not imagination. In 2023 Samsung employees were reported to have pasted internal source code into ChatGPT. No hacker needed. The leak was the paste.')},
+ async()=>{await say('First guard: a P I I masker. It swaps names, phone numbers and I D numbers for tokens, even inside free text.');await drag($('#mask'),$('#g1'));await tap($('#bRun'))},
+ async()=>{await popup($('#tests'),'tip','Progress','No raw PII, but not done','We still send name and Aadhaar tokens the task never needed, the customer was not told, and nobody said how long the data stays.');await say('Better. No raw personal data. But why send an Aadhaar number at all, even masked? The task is only to draft a reply.')},
+ async()=>{await say('Second guard: the data minimiser. If the task does not need it, it does not go.');await drag($('#mini'),$('#g2'));await tap($('#bRun'))},
+ async()=>{await say('Last two guards: notice and consent, and a retention rule. No training on our data, delete when the case closes.');await drag($('#notice'),$('#g3'));await drag($('#ret'),$('#g4'));await tap($('#bRun'))},
+ async()=>{await popup($('#meterBox'),'tip','Privacy by design','Minimise, mask, tell, delete','Four guards, in that order of thinking. The model still drafts a good reply, because it never needed the identity.');await say('Privacy by design! The model still writes a good reply, because it never needed to know who the customer is.')},
+ async()=>{await popup($('#incCard'),'real','India · DPDP Act 2023','Rules notified Nov 2025, phased in','Board at once; consent managers from Nov 2026; core duties like notice, security safeguards and breach notice from May 2027. Penalty up to ₹250 crore for failing security safeguards. Source: PIB, Nov 2025.');await say('In India, this is the D P D P Act. The rules were notified in November 2025 and phase in. The core duties start in May 2027, and failing to protect data can cost up to ₹250 crore.')},
+ async()=>{await popup($('#tierCard'),'tip','EU AI Act','Four risk tiers','AutoDesh plans to sell in Europe. The EU AI Act sorts AI uses by risk: prohibited, high-risk, transparency, minimal.');await say('Now AutoDesh wants to sell in Europe. The E U A I Act sorts A I uses into four risk tiers. Let us sort a few.')},
+ async()=>{await say('The website chatbot. Its main duty: tell people they are talking to an A I. That is the transparency tier.');await drag($('#u1'),$('#tT'))},
+ async()=>{await say('Credit scoring for car loans decides people\'s access to money. That is high risk.');await drag($('#u2'),$('#tH'))},
+ async()=>{await say('A webcam that scores workshop staff\'s emotions. In the workplace, that is prohibited. And a spare parts forecast? Minimal risk, no special duties.');await drag($('#u3'),$('#tP'));await drag($('#u4'),$('#tM'));await tap($('#bCheck'))},
+ async()=>{await popup($('#dates'),'why','Why it matters','Dates matter, and they moved','Prohibitions apply since 2 Feb 2025. High-risk duties were due 2 Aug 2026 but the Digital Omnibus moved them to 2 Dec 2027. Always check the official timeline before quoting.');await say('Four of four correct. Note the dates: prohibitions already apply since February 2025. High risk duties were delayed to December 2027. Laws move, so always check the official timeline.')},
+ async()=>{await popup($('#whyCard'),'why','Why it matters','Every prompt is a data transfer','Managers: ask what is in it, is it needed, was the customer told, how long is it kept. Engineers: minimise, mask, log, delete.');await say('Why does this matter? Every prompt to an outside model is a data transfer. Managers, ask four questions. Engineers, minimise, mask, log and delete.')},
+ async()=>{await popup($('.host'),'tip','Your turn','Trainer repeats the demo','Press 🙋 Your turn. BHIM highlights each card and where it goes, and ticks every move you make.');await say('Now, trainer, it is your turn. Press the Your turn button and repeat my moves. I will highlight every card for you.')},
+ async()=>{await popup($('#nextCard'),'tip','Next','Episode 7','Can we trust it? Evals and monitoring.');await say('In the next episode, we prove our bot still works after every model update, with a golden test set and kill criteria. See you there. Dhanyavaad!');hand.style.opacity=0}
+];
+let step=0,busy=false,auto=false;
+function ui(){
+  $('#progBar').style.width=(step/S.length*100)+'%';$('#progTxt').textContent=`Step ${step} of ${S.length}`;
+  $('#bPlay').disabled=auto;$('#bPause').disabled=!auto;$('#bPlay').textContent=step>0&&step<S.length?'▶ Resume':'▶ Play guided demo';
+}
+async function runStep(){
+  if(busy||step>=S.length)return;busy=true;fast=false;ui();
+  try{await S[step]()}catch(e){console.error(e)}
+  step++;busy=false;fast=false;
+  if(step>=S.length)auto=false;
+  ui();
+  if(auto){await wait(500);if(auto)runStep()}
+}
+$('#bPlay').onclick=()=>{if(step>=S.length){restart(true);return}auto=true;ui();runStep()};
+$('#bPause').onclick=()=>{auto=false;stopVoice();ui()};
+$('#bNext').onclick=()=>{if(busy){fast=true;stopVoice()}else{auto=false;runStep()}};
+function restart(thenPlay){
+  auto=false;fast=true;stopVoice();
+  const go=()=>{if(busy)return setTimeout(go,60);step=0;fast=false;resetScene();renderQuiz();$('#sub').innerHTML='Ready. Press Play guided demo.';ui();if(thenPlay===true){auto=true;ui();runStep()}};go();
+}
+$('#bRestart').onclick=()=>restart(false);
+$('#bVoice').onclick=()=>{voiceOn=!voiceOn;if(!voiceOn)stopVoice();$('#bVoice').textContent=voiceOn?'🔊 Voice on':'🔇 Voice off'};
+$('#bSpeed').onclick=()=>{rate=rate===1?1.25:rate===1.25?0.85:1;$('#bSpeed').textContent='Speed '+rate+'x'};
+document.addEventListener('keydown',e=>{if(e.target.tagName==='SELECT')return;if(e.code==='Space'){e.preventDefault();auto?$('#bPause').click():$('#bPlay').click()}if(e.code==='ArrowRight')$('#bNext').click()});
+ui();
+
+/* ===== BHIM engine v2: offline training edition (back/revert, jump, Your turn, Indian English voice, richer motion) ===== */
+const ORIG_ST=window.setTimeout;
+let replaying=false, recording=null, ytMode=false, ytList=[], ytIdx=0;
+const sleep=ms=>new Promise(r=>ORIG_ST.call(window,r,ms));
+const until=async f=>{let n=0;while(!f()&&n++<400)await sleep(40)};
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const EP=(document.title.match(/Ep\s*(\d)/)||[,'0'])[1];
+
+/* ---------- voice: Indian English first ---------- */
+function rankV(v){let s=0;if(/en[-_]IN/i.test(v.lang))s+=20;if(/india/i.test(v.name))s+=10;
+  if(/prabhat|neerja|ravi|heera|kajal|rishi|veena|aarav|ananya/i.test(v.name))s+=6;
+  if(/natural|neural|online|premium|enhanced/i.test(v.name))s+=3;if(/google/i.test(v.name))s+=1;
+  if(/^hi/i.test(v.lang))s-=30;return s}
+function loadVoices2(){
+  const sel=$('#voiceSel');
+  if(!hasTTS){sel.innerHTML='<option>Browser voice not available (subtitles only)</option>';return}
+  voices=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));
+  voices.sort((a,b)=>rankV(b)-rankV(a));
+  sel.innerHTML=voices.length?voices.map((v,i)=>`<option value="${i}">${/en[-_]IN/i.test(v.lang)?'★ ':''}${v.name} (${v.lang})</option>`).join(''):'<option>No English voice found (subtitles only)</option>';
+  let keep=null;try{keep=localStorage.getItem('bhimVoice')}catch(e){}
+  const ki=voices.findIndex(v=>v.name===keep);
+  voice=voices[ki>=0?ki:0]||null; if(ki>=0)sel.value=String(ki);
+  const n=$('#voiceNote'); if(n) n.innerHTML=voices.some(v=>/en[-_]IN/i.test(v.lang))?'★ = Indian English voice (picked first).':'No Indian English voice on this PC. Windows: Settings › Time &amp; language › Speech › Add voices › English (India), then reload.';
+}
+if(hasTTS){speechSynthesis.onvoiceschanged=loadVoices2}
+loadVoices2();
+$('#voiceSel').onchange=e=>{voice=voices[+e.target.value]||null;try{localStorage.setItem('bhimVoice',voice?voice.name:'')}catch(x){}};
+
+/* trainer-style delivery: sentence by sentence with short pauses, karaoke subtitles */
+say=function(t){
+  const sub=$('#sub'); const plain=t.replace(/<[^>]+>/g,'');
+  const toks=plain.split(/(\s+)/).filter(x=>x!=='');
+  sub.innerHTML=toks.map(w=>/^\s+$/.test(w)?w:`<span class="w">${esc(w)}</span>`).join('');
+  const spans=[...sub.querySelectorAll('.w')];
+  const lit=k=>spans.forEach((s,i)=>s.classList.toggle('on',i<=k));
+  bot.classList.add('talk');
+  return new Promise(res=>{
+    let fin=false; const done=()=>{if(fin)return;fin=true;bot.classList.remove('talk');lit(spans.length);res()};
+    if(fast||replaying){done();return}
+    if(!voiceOn||!hasTTS||!voice){const d=(1200+plain.length*55)/rate;spans.forEach((s,k)=>ORIG_ST.call(window,()=>{if(!fin)lit(k)},k*d/Math.max(1,spans.length)));ORIG_ST.call(window,done,d);return}
+    speechSynthesis.cancel();
+    const parts=plain.match(/[^.!?]+[.!?]+["')]*\s*|[^.!?]+$/g)||[plain];
+    let wi=0, pi=0;
+    const next=()=>{if(fin)return;if(pi>=parts.length){done();return}
+      const p=parts[pi++]; const w0=wi, nw=(p.match(/\S+/g)||[]).length; wi+=nw;
+      const u=new SpeechSynthesisUtterance(speakable(p.trim()));
+      u.voice=voice;u.lang=voice.lang;u.rate=0.92*rate;u.pitch=1.0;
+      u.onstart=()=>lit(w0);
+      u.onboundary=e=>{if(e.name&&e.name!=='word')return;const said=(speakable(p).slice(0,e.charIndex).match(/\S+/g)||[]).length;lit(w0+Math.min(nw-1,said))};
+      u.onend=()=>{lit(wi-1);ORIG_ST.call(window,next,220/rate)};
+      u.onerror=e=>{if(e&&/interrupt|cancel/.test(e.error||''))done();else next()};
+      speechSynthesis.speak(u)};
+    ORIG_ST.call(window,done,(6000+plain.length*130)/rate);
+    next();
+  });
+};
+
+/* ---------- richer motion ---------- */
+function lookAt(el){try{const r=el.getBoundingClientRect(),b=bot.getBoundingClientRect();
+  const dx=Math.max(-3,Math.min(3,(r.left+r.width/2-(b.left+b.width/2))/160)),dy=Math.max(-2,Math.min(2,(r.top+r.height/2-(b.top+70))/220));
+  bot.querySelectorAll('.eye').forEach(e=>e.style.translate=dx+'px '+dy+'px')}catch(e){}}
+const _moveTo=moveTo; moveTo=async function(el){lookAt(el);return _moveTo(el)};
+const cssEsc=s=>(window.CSS&&CSS.escape)?CSS.escape(s):s.replace(/[^\w-]/g,'\\$&');
+function selOf(el){if(!el)return null;if(el.id)return '#'+cssEsc(el.id);const p=[];let e=el;while(e&&e!==document.body){const i=[...e.parentElement.children].indexOf(e)+1;p.unshift(`${e.tagName.toLowerCase()}:nth-child(${i})`);e=e.parentElement}return 'body>'+p.join('>')}
+function labelOf(el){if(!el)return '';const c=el.cloneNode(true);c.querySelectorAll('small,.chip').forEach(x=>x.remove());return (c.textContent||'').replace(/\s+/g,' ').trim().slice(0,46)||el.id||'item'}
+const ZL={};function zoneLabel(z){if(z.id&&ZL[z.id])return ZL[z.id];const zl=z.querySelector('.zl');if(zl){const c=zl.cloneNode(true);c.querySelectorAll('small,span,em,i,br').forEach(x=>x.remove());return c.textContent.replace(/\s+/g,' ').trim().slice(0,40)}return labelOf(z)||z.id}
+$$('.zone').forEach(z=>{if(z.id)ZL[z.id]=zoneLabel(z)});
+function rec(a){if(recording&&!ytMode)recording.push(a)}
+function landFx(zone){if(fast||replaying)return;zone.classList.remove('land');void zone.offsetWidth;zone.classList.add('land');
+  const r=zone.getBoundingClientRect();for(let i=0;i<10;i++){const s=document.createElement('i');s.className='spark';
+  s.style.left=(r.left+r.width/2+scrollX)+'px';s.style.top=(r.top+r.height/2+scrollY)+'px';const an=i/10*Math.PI*2;
+  s.style.setProperty('--dx',Math.cos(an)*70+'px');s.style.setProperty('--dy',Math.sin(an)*50+'px');document.body.appendChild(s);ORIG_ST.call(window,()=>s.remove(),750)}}
+const _tap=tap; tap=async function(el){rec({t:'tap',sel:selOf(el),label:labelOf(el)});return _tap(el)};
+drag=async function(chip,zone){
+  rec({t:'drag',sel:selOf(chip),zsel:selOf(zone),label:labelOf(chip),zlabel:zoneLabel(zone)});
+  await show(chip);await moveTo(chip);chip.classList.add('lift');await wait(260);
+  const a=chip.getBoundingClientRect(), b=zone.getBoundingClientRect();
+  const quick=fast||replaying||!document.body.animate;
+  if(!quick){
+    const g=chip.cloneNode(true);g.removeAttribute('id');g.classList.add('ghost');
+    Object.assign(g.style,{left:a.left+'px',top:a.top+'px',width:a.width+'px',transition:'none'});
+    document.body.appendChild(g);chip.style.opacity=.3;
+    const tx=b.left+8-a.left, ty=b.top+8-a.top, arc=-Math.min(170,50+Math.hypot(tx,ty)*.22), dur=950/rate;
+    const P=[0,.2,.4,.6,.8,1], hx=a.left+a.width/2+scrollX, hy=a.top+a.height/2+scrollY;
+    const pt=p=>({x:tx*p,y:ty*p+arc*4*p*(1-p)});
+    const gk=P.map(p=>{const q=pt(p);return{offset:p,transform:`translate(${q.x}px,${q.y}px) rotate(${(tx>=0?7:-7)*Math.sin(Math.PI*p)}deg) scale(${1+.1*Math.sin(Math.PI*p)})`,boxShadow:`0 ${10+24*Math.sin(Math.PI*p)}px ${24+30*Math.sin(Math.PI*p)}px #0f1b3355`}});
+    const hk=P.map(p=>{const q=pt(p);return{offset:p,transform:`translate(${hx+q.x}px,${hy+q.y}px)`}});
+    hand.style.transition='none';
+    const ease='cubic-bezier(.5,.05,.25,1)';
+    const an=g.animate(gk,{duration:dur,easing:ease,fill:'forwards'});
+    const ha=hand.animate(hk,{duration:dur,easing:ease,fill:'forwards'});
+    await Promise.race([an.finished,sleep(dur+400)]);
+    hand.style.transform=hk[hk.length-1].transform;ha.cancel();hand.style.transition='';
+    g.remove();
+  }
+  chip.style.opacity='';chip.classList.remove('lift');
+  place(chip,zone);landFx(zone);await wait(250);
+};
+const spot=document.createElement('div');spot.id='spot';document.body.appendChild(spot);
+const _popup=popup; popup=async function(el,kind,...r){await _popup(el,kind,...r);if(fast||replaying||ytMode)return;
+  pop.classList.remove('enter');void pop.offsetWidth;pop.classList.add('enter');
+  const b=el.getBoundingClientRect();Object.assign(spot.style,{display:'block',left:(b.left+scrollX-8)+'px',top:(b.top+scrollY-8)+'px',width:(b.width+16)+'px',height:(b.height+16)+'px'})};
+const _clearPop=clearPop; clearPop=function(){_clearPop();spot.style.display='none'};
+
+/* ---------- step labels, back / revert, jump ---------- */
+const LBL=S.map((f,i)=>{const m=f.toString().match(/say\((['"`])((?:\\.|(?!\1).){0,200})/);let t=m?m[2].replace(/\\'/g,"'").replace(/<[^>]+>/g,''):'Step';t=t.split(/(?<=[.!?])\s/)[0];return `${i+1}. ${t.slice(0,58)}${t.length>58?'…':''}`});
+async function replayTo(n,msg){
+  const ov=$('#rewind');ov.textContent=msg||`⏪ Rewinding to step ${n}…`;ov.classList.add('on');
+  auto=false;replaying=true;fast=true;stopVoice();
+  window.setTimeout=function(f,ms,...x){return ORIG_ST.call(window,f,0,...x)};
+  try{resetScene();for(let i=0;i<n;i++){step=i;try{await S[i]()}catch(e){console.error(e)}}}
+  finally{window.setTimeout=ORIG_ST}
+  step=n;replaying=false;fast=false;busy=false;clearPop();hand.style.opacity=0;ui();
+  await sleep(120);ov.classList.remove('on');
+}
+async function settle(){auto=false;if(busy){fast=true;stopVoice();await until(()=>!busy)}}
+async function goBack(){
+  if(replaying)return;const wasBusy=busy;const cur=step;await settle();
+  const target=Math.max(0,wasBusy?cur:cur-1);await replayTo(target);
+  $('#sub').innerHTML=`↩ Reverted to the start of step ${target+1} of ${S.length}. Press <b>⏭ Next</b> to replay it, or explain it yourself.`;
+}
+async function jumpTo(i){if(replaying)return;await settle();await replayTo(i);runStep()}
+
+/* ---------- Your turn: trainer repeats the same moves ---------- */
+async function buildYT(){if(ytList.length)return;recording=[];await replayTo(S.length,'Preparing your checklist…');ytList=recording;recording=null}
+function q(sel){try{return document.querySelector(sel)}catch(e){return null}}
+function ytText(a){return a.t==='drag'?`Drag <b>${esc(a.label)}</b> → ${esc(a.zlabel)}`:`Click <b>${esc(a.label)}</b>`}
+function renderYT(){
+  $$('.yt-target,.yt-zone').forEach(e=>e.classList.remove('yt-target','yt-zone'));
+  const box=$('#ytList');if(!box)return;
+  box.innerHTML=ytList.map((a,i)=>`<li class="${i<ytIdx?'done':i===ytIdx?'cur':''}">${ytText(a)}</li>`).join('');
+  const cur=box.querySelector('.cur');if(cur)cur.scrollIntoView({block:'nearest'});
+  $('#ytCount').textContent=`${Math.min(ytIdx,ytList.length)} / ${ytList.length} moves`;
+  const a=ytList[ytIdx];
+  if(!a){ytFinish();return}
+  const el=q(a.sel);if(el)el.classList.add('yt-target');
+  if(a.t==='drag'){const z=q(a.zsel);if(z)z.classList.add('yt-zone')}
+  $('#sub').innerHTML=`<b>Your turn ${ytIdx+1}/${ytList.length}:</b> ${ytText(a)}`;
+}
+function zoneOk(z,a){const ez=q(a.zsel);if(!z||!ez)return false;if(z===ez)return true;
+  return /^slot/i.test(zoneLabel(ez))&&z.parentElement===ez.parentElement&&z.dataset.accept===ez.dataset.accept}
+function ytCheckDrag(){if(!ytMode)return;const a=ytList[ytIdx];if(!a||a.t!=='drag')return;const el=q(a.sel);if(el&&zoneOk(el.closest('.zone'),a))ytTick()}
+function ytTick(){ytIdx++;renderYT()}
+let ytDone=false;
+async function ytFinish(){if(ytDone)return;ytDone=true;$('#ytCount').textContent=`${ytList.length} / ${ytList.length} moves ✓`;confetti();await say('Shabash! You repeated the full demo. Now ask the room what they noticed.')}
+async function startYT(){
+  await settle();await buildYT();
+  resetScene();step=0;ui();ytMode=true;ytIdx=0;ytDone=false;document.body.classList.add('ytmode');
+  $('#ytPanel').hidden=false;$('#mode').textContent='Mode: YOUR TURN';renderYT();
+  bot.classList.add('wave');await say('Your turn now, trainer. Repeat my moves. I will highlight each card and where it goes.');bot.classList.remove('wave');renderYT();
+}
+function exitYT(){ytMode=false;document.body.classList.remove('ytmode');$('#ytPanel').hidden=true;$('#mode').textContent='Mode: BHIM demo';
+  $$('.yt-target,.yt-zone').forEach(e=>e.classList.remove('yt-target','yt-zone'))}
+async function ytShow(){const a=ytList[ytIdx];if(!a)return;const el=q(a.sel);if(!el)return ytTick();
+  const keep=ytMode;ytMode=false;try{if(a.t==='drag'){const z=q(a.zsel);if(z)await drag(el,z)}else await tap(el)}finally{ytMode=keep}hand.style.opacity=0;ytTick()}
+document.addEventListener('click',e=>{if(!ytMode||replaying)return;const a=ytList[ytIdx];if(!a||a.t!=='tap')return;const el=q(a.sel);if(el&&(e.target===el||el.contains(e.target)))ORIG_ST.call(window,ytTick,0)},true);
+new MutationObserver(()=>{if(ytMode&&!replaying)ytCheckDrag()}).observe(document.body,{childList:true,subtree:true});
+
+function confetti(){if(!document.body.animate)return;const C=['#F5A524','#1FB5A0','#E5484D','#2BB673','#5ff2dc'];
+  for(let i=0;i<60;i++){const s=document.createElement('i');s.className='conf';s.style.background=C[i%5];s.style.left=(Math.random()*innerWidth)+'px';s.style.top=(scrollY-20)+'px';
+  document.body.appendChild(s);s.animate([{transform:'translateY(0) rotate(0)'},{transform:`translateY(${innerHeight+40}px) rotate(${Math.random()*720}deg)`}],{duration:1600+Math.random()*1400,easing:'cubic-bezier(.3,.6,.5,1)'}).onfinish=()=>s.remove()}}
+
+/* ---------- UI wiring ---------- */
+(function(){
+  const host=$('.host'), ctr=host.querySelector('.ctrls');
+  const m=document.createElement('div');m.id='mode';m.className='mode';m.textContent='Mode: BHIM demo';host.insertBefore(m,host.querySelector('h2'));
+  const bb=document.createElement('button');bb.className='b-sec';bb.id='bBack';bb.textContent='⏮ Back';bb.title='Revert the last step (keyboard ←)';ctr.insertBefore(bb,$('#bNext'));
+  bb.onclick=goBack;
+  const row=document.createElement('div');row.className='ctrls';row.style.marginTop='8px';
+  row.innerHTML='<button class="b-run" id="bYT">🙋 Your turn: I repeat it</button>';
+  ctr.after(row);
+  const js=document.createElement('select');js.id='jumpSel';js.setAttribute('aria-label','Jump to step');
+  js.innerHTML='<option value="">Jump to step…</option>'+LBL.map((l,i)=>`<option value="${i}">${esc(l)}</option>`).join('');
+  row.after(js);js.onchange=()=>{const v=js.value;js.value='';if(v!=='')jumpTo(+v)};
+  const vn=document.createElement('div');vn.id='voiceNote';vn.className='small';vn.style.marginTop='4px';$('#voiceSel').after(vn);loadVoices2();
+  const p=document.createElement('div');p.id='ytPanel';p.hidden=true;
+  p.innerHTML='<div class="yth"><b>🙋 Your turn</b><span id="ytCount"></span></div><ol id="ytList"></ol><div class="ctrls"><button class="b-sec" id="ytShow">👀 BHIM, show me</button><button class="b-sec" id="ytSkip">Skip ›</button><button class="b-sec" id="ytAgain">↺ Again</button><button class="b-sec" id="ytExit">✕ Exit</button></div>';
+  host.appendChild(p);
+  $('#bYT').onclick=startYT;$('#ytShow').onclick=ytShow;$('#ytSkip').onclick=ytTick;$('#ytAgain').onclick=startYT;$('#ytExit').onclick=exitYT;
+  const ov=document.createElement('div');ov.id='rewind';document.body.appendChild(ov);
+  /* nav becomes offline links between episode files */
+  $$('nav.eps span').forEach((s,i)=>{const a=document.createElement('a');a.href=`ep${i+1}.html`;a.textContent=s.textContent;a.className=s.className;s.replaceWith(a)});
+  const lg=$('header .logo');if(lg&&!lg.closest('a')){const a=document.createElement('a');a.href='index.html';a.style.color='inherit';a.style.textDecoration='none';lg.replaceWith(a);a.appendChild(lg)}
+  /* starting Play or Restart leaves Your turn */
+  ['#bPlay','#bRestart'].forEach(id=>$(id).addEventListener('click',()=>{if(ytMode)exitYT()},true));
+  document.addEventListener('keydown',e=>{if(e.target.tagName==='SELECT')return;if(e.code==='ArrowLeft'){e.preventDefault();goBack()}});
+  if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.12});$$('main .card').forEach(c=>{c.classList.add('rise');io.observe(c)});ORIG_ST.call(window,()=>$$('.rise').forEach(c=>c.classList.add('in')),2500)}
+})();
+/* keep the original card order after every reset, so a reverted scene looks exactly like the first run */
+const HOME_ORDER=[...new Set($$('.chip').map(c=>c.parentElement))].map(p=>[p,[...p.children].filter(c=>c.classList.contains('chip')).map(c=>c.id)]);
+const _reset=resetScene; resetScene=function(){_reset();HOME_ORDER.forEach(([p,ids])=>ids.forEach(id=>{const c=document.getElementById(id);if(c&&c.parentElement===p)p.appendChild(c)}))};
+
+</script>
+
+</body></html>
